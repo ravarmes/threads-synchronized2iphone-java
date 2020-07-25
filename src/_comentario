@@ -1,0 +1,49 @@
+9.9 - Sincronização
+
+O assunto agora é um pouco mais complicado do que o estudado até agora, pois trata de como duas ou mais threads podem compartilhar o mesmo objeto, ou seja, quais são os riscos que corremos quando dois objetos podem ser vistos simultâneamente.
+
+Cenário: 
+
+Imaginemos um processo de compra on-line pela Internet, onde inúmeras pessoam podem consultar os itens disponíveis em estoque e realizar seus pedidos. Pois bem, como não queremos causar situações indigestas com nossos clientes, precisamos garantir com seus pedidos sejam faturados corretamente. Bom onde queremos chegar ? Imagine que temos 5 aparelhos celulares S55 SIEMENS em nosso estoque e que foi lançado uma promoção desse aparelho e 200 pessoas estão dispostas a entrar no tapa por um aparelho, bem temos que garantir que esse processo seja concretizado sem maiores problema. (tudo isso foi dito para se esplanar a situação... ) Vejamos como resolver esse problema:
+
+Não tenter vender o programa acima para alguma loja que você será escurraçado!
+
+O código de efetuar pedido, sempre efetuará o pedido tendo ou não estoque, note que na saída houve 10 cliente que efetuaram seus pedidos com estoque estourado:
+
+Pedido faturado para o cliente Cliente: 0
+Pedido faturado para o cliente Cliente: 1
+Pedido faturado para o cliente Cliente: 2
+Pedido faturado para o cliente Cliente: 3
+Pedido faturado para o cliente Cliente: 5
+Pedido faturado para o cliente Cliente: 6
+Pedido faturado para o cliente Cliente: 8
+Pedido faturado para o cliente Cliente: 9
+Pedido faturado para o cliente Cliente: 10
+Pedido faturado para o cliente Cliente: 11
+Pedido faturado para o cliente Cliente: 4
+Pedido faturado para o cliente Cliente: 7
+Pedido faturado para o cliente Cliente: 12
+Pedido faturado para o cliente Cliente: 13
+Pedido faturado para o cliente Cliente: 14
+Pedido faturado para o cliente Cliente: 0
+Pedido faturado para o cliente Cliente: 1
+Pedido faturado para o cliente Cliente: 2
+Pedido faturado para o cliente Cliente: 3
+Nao tem estoque para o cliente Cliente: 5
+Nao tem estoque para o cliente Cliente: 6
+Nao tem estoque para o cliente Cliente: 8
+Nao tem estoque para o cliente Cliente: 9
+Nao tem estoque para o cliente Cliente: 11
+Nao tem estoque para o cliente Cliente: 10
+Nao tem estoque para o cliente Cliente: 4
+Nao tem estoque para o cliente Cliente: 12
+Nao tem estoque para o cliente Cliente: 7
+Nao tem estoque para o cliente Cliente: 13
+Nao tem estoque para o cliente Cliente: 14
+
+O que queremos é não permitir que haja faturamento caso o estoque esteja negativo.
+Pelo resultado não é muito difícil deduzir o que aconteceu nesse processamento - embora você possa executar e obter outro resultado. Observe que todos os pedidos só foram efetuados porque há no método efetuarPedido uma suspensão da execução das thread para sua concretização, ou seja, até o momento em que a thread volta após sua suspensão, o pedido ainda não foi efetuado, com isso, outros clientes podem efetuar seus pedidos - quando esse ciclo se repetir para os 5 primeiros clientes, aí sim, não será mais possível concretizar pedidos, pois o estoque do item se tornou 0. Porém não foi exatamente isso que aconteceu em nosso exemplo anterior. E você é capaz de descobrir porque ?
+
+A grande sacada do programa anterior é suspender a thread por um tempo para que antes de concluir sua operação, dando lugar as outras, fazendo com que o estoque fique negativo.
+
+Mas existe uma solução para que esse "erro" seja revertido, ou seja, não permitir que dois clientes possam concluir seus pedidos ao mesmo tempo.
